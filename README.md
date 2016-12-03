@@ -1,6 +1,19 @@
-frontend-nanodegree-arcade-game
+# Arcade Game
 ===============================
 
-Students should use this [rubric](https://review.udacity.com/#!/projects/2696458597/rubric) for self-checking their submission. Make sure the functions you write are **object-oriented** - either class functions (like Player and Enemy) or class prototype functions such as Enemy.prototype.checkCollisions, and that the keyword 'this' is used appropriately within your class and class prototype functions to refer to the object the function is called upon. Also be sure that the **readme.md** file is updated with your instructions on both how to 1. Run and 2. Play your arcade game.
+## The Game
+Help a princess navigate past a swarm of **angry** bugs to get to a nice river.
 
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
+## How to install
+* Clone the repo you are currently looking at
+* If you dont have it download chrome [here](https://www.google.com/chrome/browser/desktop/index.html?brand=CHBD&gclid=CjwKEAiA94nCBRDxismumrL83icSJAAeeETQ-d3MxlvL5DJA8Li-ICOASrywx0w7ySeUCc8Mz8kp_BoCmpvw_wcB)
+* In Chrome, go to File > Open File, then navigate to the index.html file in the cloned repo
+* Open the index.html file and **ENJOY**
+
+## How to play
+* Use the left, right, up, and down arrow to move the player
+* Try and move the player to the water at the top of the screen
+* **Watch out for Bugs**
+
+## Udacity
+If you want to learn how to make a game like this, check out [Udacities Front-End Web Development Nanodegree](https://www.udacity.com/course/front-end-web-developer-nanodegree--nd001?v=fe1)

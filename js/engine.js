@@ -13,7 +13,6 @@
  * the canvas' context (ctx) object globally available to make writing app.js
  * a little simpler to work with.
  */
-
 var Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
@@ -23,7 +22,9 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
-        lastTime;
+        lastTime,
+        lastSpawnTime,
+        spawnInterval;
 
     canvas.width = 505;
     canvas.height = 606;
@@ -41,6 +42,17 @@ var Engine = (function(global) {
          */
         var now = Date.now(),
             dt = (now - lastTime) / 1000.0;
+
+        /* Adds enemies to the allEnemies array.  First decides
+        if it is time to add an enemy, then chooses a new
+        interval to wait before making another enemy
+        */
+
+        if (Date.now() - lastSpawnTime > spawnInterval) {
+            allEnemies.push(new Enemy());
+            lastSpawnTime = Date.now();
+            spawnInterval = newSpawnInterval();
+        }
 
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
@@ -64,9 +76,18 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
-        reset();
+        lastSpawnTime = Date.now();
+        spawnInterval = newSpawnInterval();
         lastTime = Date.now();
         main();
+    }
+
+    /* This function randomly generates a new interval to wait before
+    generating a new enemy.  Choosen a number between 2 seconds and
+    .5 seconds
+    */
+    function newSpawnInterval() {
+        return Math.floor((Math.random() * 2000) + 500);
     }
 
     /* This function is called by main (our game loop) and itself calls all
@@ -79,8 +100,50 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
+        checkCollisions();
+        checkForWin();
         updateEntities(dt);
-        // checkCollisions();
+    }
+
+    /* This function checks to see if an enemy has collided with the
+    player.  It does this by looping over each enemy and checking if 
+    it is on the same row as the player.  If it is, it checks the enemies
+    left and right x locations to see if they fall between the players x 
+    locations.  For a more realistic look, there is a small offset.  If
+    one of the enemy x locations is on the player, then all enemies are
+    deleted and the player goes back to the lost starting position.
+    */
+    function checkCollisions() {
+        allEnemies.forEach(function(enemy) {
+            if (enemy.row === player.row) {
+                var enemyImg = Resources.get(enemy.sprite),
+                    playerImg = Resources.get(player.sprite),
+                    imageMargin = 10,
+                    enemyRight = enemy.x + enemyImg.width - imageMargin,
+                    playerRight = player.x + playerImg.width - imageMargin,
+                    enemyLeft = enemy.x + imageMargin,
+                    playerLeft = player.x + imageMargin;
+                if ((enemyLeft > playerLeft && enemyLeft < playerRight) ||
+                    (enemyRight > playerLeft && enemyRight < playerRight)) {
+                    player.row = 5;
+                    player.col = 2;
+                    allEnemies = [];
+                }
+            }
+        });
+    }
+
+    /*
+    This checks to see if the player won.  It simply looks at if the
+    player was able to get to row 0.  If they were, then the enemies
+    are emptied and the players goes back to the won starting position.
+    */
+    function checkForWin() {
+        if (player.row === 0) {
+            player.row = 4;
+            player.col = 2;
+            allEnemies = [];
+        }
     }
 
     /* This is called by the update function and loops through all of the
@@ -108,12 +171,12 @@ var Engine = (function(global) {
          * for that particular row of the game level.
          */
         var rowImages = [
-                'images/water-block.png',   // Top row is water
-                'images/stone-block.png',   // Row 1 of 3 of stone
-                'images/stone-block.png',   // Row 2 of 3 of stone
-                'images/stone-block.png',   // Row 3 of 3 of stone
-                'images/grass-block.png',   // Row 1 of 2 of grass
-                'images/grass-block.png'    // Row 2 of 2 of grass
+                'images/water-block.png', // Top row is water
+                'images/stone-block.png', // Row 1 of 3 of stone
+                'images/stone-block.png', // Row 2 of 3 of stone
+                'images/stone-block.png', // Row 3 of 3 of stone
+                'images/grass-block.png', // Row 1 of 2 of grass
+                'images/grass-block.png' // Row 2 of 2 of grass
             ],
             numRows = 6,
             numCols = 5,
@@ -154,14 +217,6 @@ var Engine = (function(global) {
         player.render();
     }
 
-    /* This function does nothing but it could have been a good place to
-     * handle game reset states - maybe a new game menu or a game over screen
-     * those sorts of things. It's only called once by the init() method.
-     */
-    function reset() {
-        // noop
-    }
-
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when
      * all of these images are properly loaded our game will start.
@@ -171,7 +226,7 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-princess-girl.png'
     ]);
     Resources.onReady(init);
 
