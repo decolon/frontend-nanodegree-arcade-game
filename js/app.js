@@ -28,7 +28,7 @@ Item.prototype.getY = function() {
             return 390;
         default:
             return 0;
-    }
+    };
 };
 
 
@@ -73,7 +73,7 @@ Player.prototype.constructor = Player;
 //Makes sure that the player moves when the column changes
 Player.prototype.update = function() {
     this.x = this.getX();
-}
+};
 
 //Tells the player what to do when there is a keyboard input
 Player.prototype.handleInput = function(keyText) {
@@ -90,13 +90,13 @@ Player.prototype.handleInput = function(keyText) {
         case 'up':
             this._decrementRow();
             break;
-    }
-}
+    };
+};
 
 //Convers the players col number to a valid x location
 Player.prototype.getX = function() {
     return this.col * 101;
-}
+};
 
 //Changes the players row.  Only acceps values of 1 and -1
 //-1 makes the players move up a row, +1 moves the player down.
@@ -108,7 +108,7 @@ Player.prototype._changeRow = function(change) {
         if (this.row < 5)
             this.row++;
     }
-}
+};
 
 //Changes the players col.  Only acceps values of 1 and -1
 //-1 makes the players move left a col, +1 moves the player right.
